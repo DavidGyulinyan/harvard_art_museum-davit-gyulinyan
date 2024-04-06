@@ -40,10 +40,11 @@ const updateDOM = (data) => {
         const arrowWrapper = document.createElement('div');
         userCard.appendChild(arrowWrapper);
 
-
+        //arrows image's paths
         const arrowDownPath = './assets/arrow-down.svg';
         const arrowUpPath = './assets/arrow-up.svg';
 
+        //displayed arrow
         const arrow = document.createElement('img');
         arrowWrapper.appendChild(arrow);
         arrow.src = arrowDownPath;
