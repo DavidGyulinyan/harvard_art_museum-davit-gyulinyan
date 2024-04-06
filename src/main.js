@@ -1,5 +1,4 @@
-const usersCount = (Math.floor(Math.random() * 11) + 5);
-
+const usersCount = (Math.floor(Math.random() * 11) + 20);
 //Asynchronusly fetches data from api
 const getData = async () => {
     try {
@@ -13,11 +12,12 @@ const getData = async () => {
 
 //Updates DOM elements, gets data as a parameter and displayes it in the browser
 const updateDOM = (data) => {
-    const mainElement = document.querySelector('.main');
+    let favorites = [];
+    const mainElement = document.querySelector('.section');
 
     //element where displayed the count of generated users
     const usersCountElement = document.querySelector('.users-count');
-    usersCountElement.textContent = "Displayed users count is " + usersCount
+    usersCountElement.textContent = `Displayed ${data.length} users`;
 
     //iterates through fethed data
     data.forEach(user => {
@@ -25,9 +25,19 @@ const updateDOM = (data) => {
         userCard.className = 'card';
         mainElement.appendChild(userCard);
 
+        const buttonsWrapper = document.createElement('div');
+        userCard.appendChild(buttonsWrapper);
+        buttonsWrapper.className = 'buttons-wrapper';
+
+        const addToFavBtn = document.createElement('button');
+        buttonsWrapper.appendChild(addToFavBtn);
+        addToFavBtn.className = 'add-button';
+        addToFavBtn.textContent = "Add to favorites";
+
         //user image
         const image = document.createElement('img');
         userCard.appendChild(image);
+        image.className = 'user-image';
         const imgUrl = user.picture.large;
         const imgAlt = `${user.name.first} ${user.name.last} photo`;
         image.src = imgUrl;
@@ -42,6 +52,11 @@ const updateDOM = (data) => {
 
         const arrowWrapper = document.createElement('div');
         userCard.appendChild(arrowWrapper);
+        arrowWrapper.className = 'arrow-wrapper';
+
+        const details = document.createElement('h4');
+        arrowWrapper.appendChild(details);
+        details.textContent = "Details";
 
         //arrows image's paths
         const arrowDownPath = './assets/arrow-down.svg';
@@ -54,11 +69,15 @@ const updateDOM = (data) => {
         arrow.alt = 'arrow';
         arrow.className = 'arrow';
 
-
         //unordered list to display user's data
         const unorderedList = document.createElement('ul');
         userCard.appendChild(unorderedList);
         unorderedList.className = 'unorderedList';
+
+        //list item to display the user's age 
+        const dobItem = document.createElement('li');
+        unorderedList.appendChild(dobItem);
+        dobItem.textContent = `Age: ${user.dob.age}`;
 
         //list item to display user's gender
         const genderItem = document.createElement('li');
@@ -94,9 +113,49 @@ const updateDOM = (data) => {
                 ? arrow.src = arrowUpPath
                 : arrow.src = arrowDownPath;
         });
-    });
-}
 
+        addToFavBtn.addEventListener('click', () => {
+            favorites.push(user);
+
+            const favoritesWrapper = document.querySelector('.favorites');
+
+            const favoritesCard = document.createElement('div');
+            favoritesWrapper.appendChild(favoritesCard)
+            favoritesCard.className = 'favorites-card';
+
+            const buttonsWrapper = document.createElement('div');
+            favoritesCard.appendChild(buttonsWrapper);
+            buttonsWrapper.className = 'delete-button-wrapper';
+    
+            const deleteBtn = document.createElement('button');
+            buttonsWrapper.appendChild(deleteBtn);
+            deleteBtn.className = 'delete-button'
+            deleteBtn.textContent = "delete";
+
+            //user image
+            const favItemImg = document.createElement('img');
+            favoritesCard.appendChild(favItemImg);
+            const imgUrl = user.picture.large;
+            const imgAlt = `${user.name.first} ${user.name.last} photo`;
+            favItemImg.src = imgUrl;
+            favItemImg.alt = imgAlt;
+
+            //h3 element to display user's fullname
+            const fullname = document.createElement('h4');
+            favoritesCard.appendChild(fullname);
+            fullname.className = 'fullname'
+            fullname.textContent = `${user.name.first} ${user.name.last}`;
+
+            
+            deleteBtn.addEventListener('click', () => {
+                favorites = favorites.filter(item => item.login.uuid !== user.login.uuid);
+                favoritesWrapper.removeChild(favoritesCard);
+            })
+            console.log(favorites);
+        })
+        console.log(user.id.value);
+    })
+}
 
 //Gets array from promise and send this array to updateDOM function as an argument
 const fetchData = async () => {
