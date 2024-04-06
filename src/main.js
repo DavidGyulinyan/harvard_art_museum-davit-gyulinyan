@@ -1,5 +1,4 @@
 const usersCount = (Math.floor(Math.random() * 11) + 5);
-console.log("users count is " + usersCount);
 
 //Asynchronusly fetches data from api
 const getData = async () => {
@@ -15,6 +14,8 @@ const getData = async () => {
 //Updates DOM elements, gets data as a parameter and displayes it in the browser
 const updateDOM = (data) => {
     const mainElement = document.querySelector('.main');
+
+    //element where displayed the count of generated users
     const usersCountElement = document.querySelector('.users-count');
     usersCountElement.textContent = "Displayed users count is " + usersCount
 
