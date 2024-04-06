@@ -15,6 +15,8 @@ const getData = async () => {
 //Updates DOM elements, gets data as a parameter and displayes it in the browser
 const updateDOM = (data) => {
     const mainElement = document.querySelector('.main');
+    const usersCountElement = document.querySelector('.users-count');
+    usersCountElement.textContent = "Displayed users count is " + usersCount
 
     //iterates through fethed data
     data.forEach(user => {
