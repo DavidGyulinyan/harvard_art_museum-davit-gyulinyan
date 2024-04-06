@@ -82,9 +82,11 @@ const updateDOM = (data) => {
         unorderedList.appendChild(regDateItem);
         regDateItem.textContent = `Signed in at: ${user.registered.date}`;
 
-
+        //shows more details when cklicking on an arrow
         arrowWrapper.addEventListener('click', () => {
             unorderedList.classList.toggle("listIsOpen");
+
+            //if ditails opened arrow up showes, if not arrow down showes
             unorderedList.classList.contains("listIsOpen")
                 ? arrow.src = arrowUpPath
                 : arrow.src = arrowDownPath;
