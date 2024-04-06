@@ -114,6 +114,7 @@ const updateDOM = (data) => {
                 : arrow.src = arrowDownPath;
         });
 
+        //add to favorites button
         addToFavBtn.addEventListener('click', () => {
             favorites.push(user);
 
@@ -146,14 +147,12 @@ const updateDOM = (data) => {
             fullname.className = 'fullname'
             fullname.textContent = `${user.name.first} ${user.name.last}`;
 
-            
+            //deleting the user from favorites
             deleteBtn.addEventListener('click', () => {
                 favorites = favorites.filter(item => item.login.uuid !== user.login.uuid);
                 favoritesWrapper.removeChild(favoritesCard);
             })
-            console.log(favorites);
         })
-        console.log(user.id.value);
     })
 }
 
