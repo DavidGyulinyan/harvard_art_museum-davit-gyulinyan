@@ -129,7 +129,7 @@ const updateDOM = (data) => {
                     favoritesWrapper.removeChild(favoritesCard);
                 })
             } else {
-                console.log("User is already in favorites!");
+                alert("User is already in favorites!");
             }
         });
     });
