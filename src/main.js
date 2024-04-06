@@ -1,8 +1,9 @@
-const usersCount = (Math.floor(Math.random() * 11) + 20);
-//Asynchronusly fetches data from api
+const usersCount = Math.floor(Math.random() * 11) + 20;
+
+// Asynchronously fetches data from API
 const getData = async () => {
     try {
-        const response = await fetch(`https://randomuser.me/api/?results=${usersCount}`); // Fetching data from 5 to 20 users
+        const response = await fetch(`https://randomuser.me/api/?results=${usersCount}`);
         const data = await response.json();
         return data.results;
     } catch (error) {
@@ -10,16 +11,16 @@ const getData = async () => {
     }
 }
 
-//Updates DOM elements, gets data as a parameter and displayes it in the browser
+// Updates DOM elements, gets data as a parameter, and displays it in the browser
 const updateDOM = (data) => {
     let favorites = [];
+    let favoritesIds = new Set(); // Set to store unique user IDs
+
     const mainElement = document.querySelector('.section');
 
-    //element where displayed the count of generated users
     const usersCountElement = document.querySelector('.users-count');
     usersCountElement.textContent = `Displayed ${data.length} users`;
 
-    //iterates through fethed data
     data.forEach(user => {
         const userCard = document.createElement('div');
         userCard.className = 'card';
@@ -34,7 +35,6 @@ const updateDOM = (data) => {
         addToFavBtn.className = 'add-button';
         addToFavBtn.textContent = "Add to favorites";
 
-        //user image
         const image = document.createElement('img');
         userCard.appendChild(image);
         image.className = 'user-image';
@@ -43,12 +43,10 @@ const updateDOM = (data) => {
         image.src = imgUrl;
         image.alt = imgAlt;
 
-        //h3 element to display user's fullname
         const fullname = document.createElement('h2');
         userCard.appendChild(fullname);
         fullname.className = 'fullname'
         fullname.textContent = `${user.name.first} ${user.name.last}`;
-
 
         const arrowWrapper = document.createElement('div');
         userCard.appendChild(arrowWrapper);
@@ -58,105 +56,85 @@ const updateDOM = (data) => {
         arrowWrapper.appendChild(details);
         details.textContent = "Details";
 
-        //arrows image's paths
         const arrowDownPath = './assets/arrow-down.svg';
         const arrowUpPath = './assets/arrow-up.svg';
 
-        //displayed arrow
         const arrow = document.createElement('img');
         arrowWrapper.appendChild(arrow);
         arrow.src = arrowDownPath;
         arrow.alt = 'arrow';
         arrow.className = 'arrow';
 
-        //unordered list to display user's data
         const unorderedList = document.createElement('ul');
         userCard.appendChild(unorderedList);
         unorderedList.className = 'unorderedList';
 
-        //list item to display the user's age 
         const dobItem = document.createElement('li');
         unorderedList.appendChild(dobItem);
         dobItem.textContent = `Age: ${user.dob.age}`;
 
-        //list item to display user's gender
         const genderItem = document.createElement('li');
         unorderedList.appendChild(genderItem);
         genderItem.textContent = `Gender: ${user.gender}`;
 
-        //list item to display user's email
         const emailItem = document.createElement('li');
         unorderedList.appendChild(emailItem);
         emailItem.textContent = `Email: ${user.email}`;
 
-        //list item to display user's phone number
         const phonItem = document.createElement('li');
         unorderedList.appendChild(phonItem);
         phonItem.textContent = `Phone number: ${user.cell}`;
 
-        //list item to display user's username used to log in
         const usernameItem = document.createElement('li');
         unorderedList.appendChild(usernameItem);
         usernameItem.textContent = `Username: ${user.login.username}`;
 
-        //list item to display the date user signed in 
         const regDateItem = document.createElement('li');
         unorderedList.appendChild(regDateItem);
         regDateItem.textContent = `Signed in at: ${user.registered.date}`;
 
-        //shows more details when cklicking on an arrow
         arrowWrapper.addEventListener('click', () => {
             unorderedList.classList.toggle("listIsOpen");
-
-            //if ditails opened arrow up showes, if not arrow down showes
             unorderedList.classList.contains("listIsOpen")
                 ? arrow.src = arrowUpPath
                 : arrow.src = arrowDownPath;
         });
 
-        //add to favorites button
         addToFavBtn.addEventListener('click', () => {
-            favorites.push(user);
-
-            const favoritesWrapper = document.querySelector('.favorites');
-
-            const favoritesCard = document.createElement('div');
-            favoritesWrapper.appendChild(favoritesCard)
-            favoritesCard.className = 'favorites-card';
-
-            const buttonsWrapper = document.createElement('div');
-            favoritesCard.appendChild(buttonsWrapper);
-            buttonsWrapper.className = 'delete-button-wrapper';
-    
-            const deleteBtn = document.createElement('button');
-            buttonsWrapper.appendChild(deleteBtn);
-            deleteBtn.className = 'delete-button'
-            deleteBtn.textContent = "delete";
-
-            //user image
-            const favItemImg = document.createElement('img');
-            favoritesCard.appendChild(favItemImg);
-            const imgUrl = user.picture.large;
-            const imgAlt = `${user.name.first} ${user.name.last} photo`;
-            favItemImg.src = imgUrl;
-            favItemImg.alt = imgAlt;
-
-            //h3 element to display user's fullname
-            const fullname = document.createElement('h4');
-            favoritesCard.appendChild(fullname);
-            fullname.className = 'fullname'
-            fullname.textContent = `${user.name.first} ${user.name.last}`;
-
-            //deleting the user from favorites
-            deleteBtn.addEventListener('click', () => {
-                favorites = favorites.filter(item => item.login.uuid !== user.login.uuid);
-                favoritesWrapper.removeChild(favoritesCard);
-            })
-        })
-    })
+            if (!favoritesIds.has(user.login.uuid)) {
+                favorites.push(user);
+                favoritesIds.add(user.login.uuid);
+                const favoritesWrapper = document.querySelector('.favorites');
+                const favoritesCard = document.createElement('div');
+                favoritesWrapper.appendChild(favoritesCard);
+                favoritesCard.className = 'favorites-card';
+                const buttonsWrapper = document.createElement('div');
+                favoritesCard.appendChild(buttonsWrapper);
+                buttonsWrapper.className = 'delete-button-wrapper';
+                const deleteBtn = document.createElement('button');
+                buttonsWrapper.appendChild(deleteBtn);
+                deleteBtn.className = 'delete-button'
+                deleteBtn.textContent = "delete";
+                const favItemImg = document.createElement('img');
+                favoritesCard.appendChild(favItemImg);
+                favItemImg.src = imgUrl;
+                favItemImg.alt = imgAlt;
+                const fullname = document.createElement('h4');
+                favoritesCard.appendChild(fullname);
+                fullname.className = 'fullname'
+                fullname.textContent = `${user.name.first} ${user.name.last}`;
+                deleteBtn.addEventListener('click', () => {
+                    favorites = favorites.filter(item => item.login.uuid !== user.login.uuid);
+                    favoritesIds.delete(user.login.uuid);
+                    favoritesWrapper.removeChild(favoritesCard);
+                })
+            } else {
+                console.log("User is already in favorites!");
+            }
+        });
+    });
 }
 
-//Gets array from promise and send this array to updateDOM function as an argument
 const fetchData = async () => {
     try {
         const userData = await getData();
